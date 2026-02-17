@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIM Portal | Подача заявки</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFD600; /* Яскравий акцент (наприклад, жовтий Копійка) */
+            --secondary: #2D3436;
+            --bg: #F9FAFB;
+            --card: #FFFFFF;
+            --border: #E5E7EB;
+            --text: #1F2937;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .header-left {
+            text-align: left;
+        }
+
+        .logo {
+            max-width: 180px;
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 24px; font-weight: 600; margin: 0; }
+        p { color: #6B7280; font-size: 14px; }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-logout:hover {
+            opacity: 0.9;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label { font-size: 13px; font-weight: 600; color: #4B5563; }
+
+        input, select, textarea {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--primary);
+            color: var(--secondary);
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn-submit:hover { opacity: 0.9; }
+        .btn-submit:active { transform: scale(0.98); }
+
+        .full-width { grid-column: span 2; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-left">
+            <img src="YOUR_LOGO_PATH.png" alt="Logo" class="logo">
+            <h1>Нова заявка на участь</h1>
+            <p>Заповніть дані для участі у промо-акції</p>
+        </div>
+        <div class="user-info">
+            <div class="user-name" id="userName">Завантаження...</div>
+            <button class="btn-logout" onclick="logout()">Вихід</button>
+        </div>
+    </div>
+
+    <form id="pimForm">
+        <div class="form-section">
+            <div class="section-title">1. Загальна інформація</div>
+            <div class="grid">
+                <div class="form-group full-width">
+                    <label>Акція*</label>
+                    <select id="action_id" required>
+                        <option value="">Вибір акції...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Автор заявки (ПІБ)</label>
+                    <input type="text" id="author_name" placeholder="Іванов Іван" required>
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="author_email" placeholder="mail@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Тип акції</label>
+                    <select id="promo_type">
+                        <option value="gazeta">Цінова газета</option>
+                        <option value="good_price">Хороша ціна</option>
+                        <option value="weekly">Тижнева акція</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Категорійний менеджер</label>
+                    <select id="category_manager">
+                        <option value="1">Олександр М. (Бакалія)</option>
+                        <option value="2">Олена К. (Молочні продукти)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-title">2. Дані про товар</div>
+            <div class="grid">
+                <div class="form-group">
+                    <label>Артикул (SKU)</label>
+                    <input type="number" id="sku" placeholder="000000" required>
+                </div>
+                <div class="form-group">
+                    <label>Найменування</label>
+                    <input type="text" id="product_name" placeholder="Автоматично з бази..." required>
+                </div>
+                <div class="form-group">
+                    <label>Стара ціна (полиця)</label>
+                    <input type="number" step="0.01" id="old_price" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Нова ціна (акційна)</label>
+                    <input type="number" step="0.01" id="new_price" placeholder="0.00">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-title">3. Додатково</div>
+            <div class="form-group full-width">
+                <label>Коментар до заявки</label>
+                <textarea id="comment" rows="3" placeholder="Ваші побажання щодо викладки чи маркетингу..."></textarea>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Відправити заявку КМ</button>
+    </form>
+</div>
+
+<script>
+    // Перевірка авторизації
+    function checkAuth() {
+        const user = localStorage.getItem('user');
+        if (!user) {
+            alert('Ви не авторизовані! Будь ласка, увійдіть в систему.');
+            window.location.href = 'login.html';
+            return null;
+        }
+        return JSON.parse(user);
+    }
+
+    // Завантаження при відкритті сторінки
+    const currentUser = checkAuth();
+    if (currentUser) {
+        document.getElementById('userName').textContent = currentUser.name;
+    }
+
+    // Завантаження списку акцій
+    async function loadActions() {
+        try {
+            const response = await fetch('http://localhost:3000/api/actions');
+            const actions = await response.json();
+            
+            const actionSelect = document.getElementById('action_id');
+            actionSelect.innerHTML = '<option value="">Вибір акції...</option>';
+            
+            actions.forEach(action => {
+                const option = document.createElement('option');
+                option.value = action.id;
+                option.textContent = `${action.name} (${action.start_date} - ${action.end_date})`;
+                actionSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Помилка завантаження акцій:', error);
+            alert('Не вдалося завантажити список акцій');
+        }
+    }
+
+    loadActions();
+
+    // Вихід
+    function logout() {
+        if (confirm('Ви впевнені, що хочете вийти?')) {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+    }
+
+    document.getElementById('pimForm').onsubmit = async (e) => {
+        e.preventDefault();
+
+        const payload = {
+            author_name: document.getElementById('author_name').value,
+            author_email: document.getElementById('author_email').value,
+            promo_type: document.getElementById('promo_type').value,
+            category_manager: document.getElementById('category_manager').value,
+            action_id: parseInt(document.getElementById('action_id').value),
+            sku: document.getElementById('sku').value,
+            product_name: document.getElementById('product_name').value,
+            old_price: document.getElementById('old_price').value,
+            new_price: document.getElementById('new_price').value,
+            comment: document.getElementById('comment').value,
+            supplier_id: currentUser.id
+        };
+
+        try {
+            const response = await fetch('http://localhost:3000/api/applications', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert('Успіх! Заявку №' + result.id + ' збережено.');
+                document.getElementById('pimForm').reset();
+                loadActions();
+            } else {
+                const error = await response.json();
+                alert('Помилка сервера: ' + error.error);
+            }
+        } catch (error) {
+            alert('Сервер не відповідає. Запустіть node server.js');
+        }
+    };
+</script>
+
+</body>
+</html>

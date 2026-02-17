@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "name": "Цінова газета №1 - Лютий",
+    "start_date": "2026-02-15",
+    "end_date": "2026-02-28",
+    "type": "gazeta",
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "name": "Хороша ціна - Молочні продукти",
+    "start_date": "2026-02-10",
+    "end_date": "2026-02-24",
+    "type": "good_price",
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "name": "Тижнева акція - Бакалія",
+    "start_date": "2026-02-20",
+    "end_date": "2026-02-26",
+    "type": "weekly",
+    "status": "active"
+  },
+  {
+    "id": 4,
+    "name": "Цінова газета №2 - Березень",
+    "start_date": "2026-03-01",
+    "end_date": "2026-03-14",
+    "type": "gazeta",
+    "status": "upcoming"
+  }
+]
