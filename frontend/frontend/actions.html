@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Доступні акції | PIM Portal</title>
+    <style>
+        :root { --primary: #FFD600; --bg: #F9FAFB; --text: #1F2937; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 40px; }
+        .action-card { 
+            background: white; padding: 20px; border-radius: 12px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .btn-apply { 
+            background: var(--primary); padding: 10px 20px; border: none; 
+            border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; color: black;
+        }
+        .status-badge { font-size: 12px; padding: 4px 8px; border-radius: 4px; background: #E5E7EB; }
+    </style>
+</head>
+<body>
+    <h1>Оберіть акцію для участі</h1>
+    <div id="actionsList">Завантаження...</div>
+
+    <script>
+async function loadActions() {
+    const listElement = document.getElementById('actionsList');
+    try {
+        // Використовуємо абсолютний шлях до вашого API
+        const response = await fetch('http://localhost:3000/api/actions/available');
+        
+        if (!response.ok) throw new Error('Сервер відповів з помилкою');
+        
+        const actions = await response.json();
+        
+        if (actions.length === 0) {
+            listElement.innerHTML = '<p>Зараз немає доступних акцій для подачі заявок.</p>';
+            return;
+        }
+
+        listElement.innerHTML = ''; // Очищуємо лоадер
+        actions.forEach(action => {
+            const card = document.createElement('div');
+            card.className = 'action-card';
+            card.innerHTML = `
+                <div>
+                    <h3 style="margin:0">${action.name}</h3>
+                    <small>ID: ${action.id} | Період: ${action.start_date} - ${action.end_date}</small>
+                </div>
+                <button class="btn-apply" onclick="goToForm('${action.id}')">Обрати</button>
+            `;
+            listElement.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Деталі помилки:', error);
+        listElement.innerHTML = `<p style="color:red">Помилка підключення до API. Перевірте, чи запущено server.js на порту 3000.</p>`;
+    }
+}
+
+// Функція переходу з передачею ID акції
+function goToForm(id) {
+    window.location.href = `index.html?action_id=${id}`;
+}
+
+loadActions();
+    </script>
+</body>
+</html>

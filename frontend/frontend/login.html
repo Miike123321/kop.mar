@@ -1,0 +1,168 @@
+<div class="container">
+    <img src="logo.png" class="logo">
+    
+    <!-- Вкладки для перемикання між входом і реєстрацією -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="login">Вхід</button>
+        <button class="tab-btn" data-tab="register">Реєстрація</button>
+    </div>
+
+    <!-- Форма входу -->
+    <div id="loginTab" class="tab-content active">
+        <h1>Вхід у PIM Portal</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Логін</label>
+                <input type="text" id="login" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="btn-submit">Увійти</button>
+        </form>
+    </div>
+
+    <!-- Форма реєстрації -->
+    <div id="registerTab" class="tab-content">
+        <h1>Реєстрація</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Ім'я компанії</label>
+                <input type="text" id="registerName" required>
+            </div>
+            <div class="form-group">
+                <label>Логін</label>
+                <input type="text" id="registerLogin" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="registerPassword" required>
+            </div>
+            <div class="form-group">
+                <label>Підтвердження пароля</label>
+                <input type="password" id="registerPasswordConfirm" required>
+            </div>
+            <button type="submit" class="btn-submit">Зареєструватися</button>
+        </form>
+    </div>
+</div>
+
+<style>
+.tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-btn.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+</style>
+
+<script>
+// Перемикання вкладок
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tabName = btn.dataset.tab;
+        
+        // Приховуємо всі вкладки
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+        
+        // Показуємо вибрану вкладку
+        document.getElementById(tabName + 'Tab').classList.add('active');
+        btn.classList.add('active');
+    });
+});
+
+// Вхід
+document.getElementById('loginForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const payload = {
+        login: document.getElementById('login').value,
+        password: document.getElementById('password').value
+    };
+
+    const response = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+        const user = await response.json();
+        localStorage.setItem('user', JSON.stringify(user));
+        alert('Вітаємо, ' + user.name);
+        window.location.href = 'actions.html';
+    } else {
+        alert('Помилка входу!');
+    }
+};
+
+// Реєстрація
+document.getElementById('registerForm').onsubmit = async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('registerName').value;
+    const login = document.getElementById('registerLogin').value;
+    const password = document.getElementById('registerPassword').value;
+    const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+
+    // Перевірка паролів
+    if (password !== passwordConfirm) {
+        alert('Паролі не збігаються!');
+        return;
+    }
+
+    if (password.length < 3) {
+        alert('Пароль повинен містити мінімум 3 символи!');
+        return;
+    }
+
+    const payload = { name, login, password };
+
+    const response = await fetch('http://localhost:3000/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+        alert('Реєстрація успішна! Тепер ви можете увійти.');
+        // Очищуємо форму
+        document.getElementById('registerForm').reset();
+        // Перемикаємось на вкладку входу
+        document.querySelector('[data-tab="login"]').click();
+    } else {
+        const error = await response.json();
+        alert('Помилка реєстрації: ' + (error.error || 'Невідома помилка'));
+    }
+};
+</script>
